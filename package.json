@@ -15,7 +15,7 @@
         "dayjs": "^1.11.7",
         "discord.js": "^14.7.1",
         "mongoose": "^7.0.1",
-        "node-myanimelist": "^4.1.0",
+        "node-myanimelist": "^4.1.1",
         "tslog": "^4.8.2"
     },
     "devDependencies": {
