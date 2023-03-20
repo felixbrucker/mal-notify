@@ -1921,10 +1921,10 @@ node-gyp@^9.0.0:
     tar "^6.1.2"
     which "^2.0.2"
 
-node-myanimelist@^4.1.1:
-  version "4.1.1"
-  resolved "https://registry.yarnpkg.com/node-myanimelist/-/node-myanimelist-4.1.1.tgz#14f6ddee1227cc66c0415ebd63a226c42405cbac"
-  integrity sha512-Dh0ItQvOQmOeIwFBQIOzfye5n8K+Q/O2/znrGKJ21OSb9nNOvCJcLJHAXuYxKGOSpHIX46LCY0Sz24aMGqtR1A==
+node-myanimelist@^4.1.2:
+  version "4.1.2"
+  resolved "https://registry.yarnpkg.com/node-myanimelist/-/node-myanimelist-4.1.2.tgz#f067957ee657d342903c122fada024d0953745d2"
+  integrity sha512-afPpwAiv5oMf4HCTNoFQe+wfCTgkk75GUJvjBT6EqnVyqclQ4higNPASsfeV84T3psHnkUAQhRtyXuAWKJpxjw==
   dependencies:
     axios "^0.25.0"
     url-join "^4.0.1"
