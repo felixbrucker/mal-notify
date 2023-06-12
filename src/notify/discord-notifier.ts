@@ -48,8 +48,8 @@ export class DiscordNotifier implements AnimeNotifier {
 
     if (this.client.isReady()) {
       const commandRoute = isProduction
-        ? Routes.applicationCommands(this.client.application.id)
-        : Routes.applicationGuildCommands(this.client.application.id, discordTestGuildId)
+        ? Routes.applicationCommands(this.client.application?.id as string)
+        : Routes.applicationGuildCommands(this.client.application?.id as string, discordTestGuildId)
       await this.restApiClient.put(
         commandRoute,
         { body: [...this.slashCommandHandler.values()].map(commandHandler => commandHandler.commandBuilder.toJSON()) }
