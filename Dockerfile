@@ -1,7 +1,8 @@
 FROM node:18-alpine
+RUN yarn set version stable
 
 WORKDIR /app
-COPY package.json yarn.lock /app/
+COPY package.json yarn.lock .yarnrc.yml /app/
 RUN yarn install
 COPY . /app
 RUN yarn build

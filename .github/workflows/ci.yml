@@ -25,6 +25,9 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
+      - name: Use current yarn
+        run: yarn set version stable
+
       - name: yarn install
         run: yarn install
 
