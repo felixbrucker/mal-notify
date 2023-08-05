@@ -21,6 +21,9 @@ import {UnsubscribeFromUser} from './discord/unsubscribe-from-user.js'
 import {MalApi} from '../mal/mal-api.js'
 
 import '../database/model/discord-user.js'
+import relativeTime from 'dayjs/plugin/relativeTime.js'
+
+dayjs.extend(relativeTime)
 
 export class DiscordNotifier implements AnimeNotifier {
   private readonly client: Client = new Client({ intents: [] })
@@ -75,15 +78,33 @@ export class DiscordNotifier implements AnimeNotifier {
   }
 
   private makeAnimeStatusChangeMessageOptions(anime: HydratedDocument<Anime>): MessageCreateOptions {
+    const startDate = anime.startDate ? dayjs(anime.startDate) : undefined
+    const endDate = anime.endDate ? dayjs(anime.endDate) : undefined
     let formattedState: string
     let color: ColorResolvable
     switch (anime.status) {
       case AnimeStatus.currentlyAiring:
-        formattedState = 'started airing'
+        if (startDate === undefined) {
+          formattedState = 'started airing'
+        } else if (startDate.isSame(dayjs().startOf('day'))) {
+          formattedState = 'started airing today'
+        } else if (startDate.isBefore(dayjs().startOf('day'))) {
+          formattedState = `started airing ${startDate.toNow()}`
+        } else {
+          formattedState = `will start airing ${startDate.fromNow()}`
+        }
         color = Colors.Aqua
         break
       case AnimeStatus.finishedAiring:
-        formattedState = 'finished airing'
+        if (endDate === undefined) {
+          formattedState = 'finished airing'
+        } else if (endDate.isSame(dayjs().startOf('day'))) {
+          formattedState = 'finished airing today'
+        } else if (endDate.isBefore(dayjs().startOf('day'))) {
+          formattedState = `finished airing ${endDate.toNow()}`
+        } else {
+          formattedState = `will finish airing ${endDate.fromNow()}`
+        }
         color = Colors.Green
         break
       case AnimeStatus.notYetAired:
@@ -106,11 +127,11 @@ export class DiscordNotifier implements AnimeNotifier {
             value: title,
           }, {
             name: 'Start date',
-            value: anime.startDate ? dayjs(anime.startDate).format('YYYY-MM-DD') : 'Did not start airing yet',
+            value: startDate ? startDate.format('YYYY-MM-DD') : 'N/A',
             inline: true,
           }, {
             name: 'End date',
-            value: anime.endDate ? dayjs(anime.endDate).format('YYYY-MM-DD') : 'Did not finish airing yet',
+            value: endDate ? endDate.format('YYYY-MM-DD') : 'N/A',
             inline: true,
           }, {
             name: 'Episodes',

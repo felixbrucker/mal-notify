@@ -18,6 +18,7 @@ module.exports = {
     '@typescript-eslint/no-inferrable-types': 'off',
     '@typescript-eslint/no-unused-vars': 'off',
     '@typescript-eslint/prefer-readonly': 'error',
+    'no-case-declarations': 'off',
     'semi': ['error', 'never', { beforeStatementContinuationChars: 'never' }],
   },
 }
