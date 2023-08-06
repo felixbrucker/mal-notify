@@ -78,8 +78,34 @@ export class DiscordNotifier implements AnimeNotifier {
   }
 
   private makeAnimeStatusChangeMessageOptions(anime: HydratedDocument<Anime>): MessageCreateOptions {
+    const numberOfEpisodes = anime.numberOfEpisodes || 12
     const startDate = anime.startDate ? dayjs(anime.startDate) : undefined
-    const endDate = anime.endDate ? dayjs(anime.endDate) : undefined
+    let endDate = anime.endDate ? dayjs(anime.endDate) : undefined
+    if (endDate === undefined) {
+      if (startDate !== undefined) {
+        endDate = startDate.add(numberOfEpisodes, 'weeks')
+      }
+    }
+    let relativeStartDate: string|undefined
+    let relativeEndDate: string|undefined
+    if (startDate === undefined) {
+      relativeStartDate = undefined
+    } else if (startDate.isSame(dayjs().startOf('day'))) {
+      relativeStartDate = 'today'
+    } else if (startDate.isBefore(dayjs().startOf('day'))) {
+      relativeStartDate = startDate.fromNow()
+    } else {
+      relativeStartDate = startDate.toNow()
+    }
+    if (endDate === undefined) {
+      relativeEndDate = undefined
+    } else if (endDate.isSame(dayjs().startOf('day'))) {
+      relativeEndDate = 'today'
+    } else if (endDate.isBefore(dayjs().startOf('day'))) {
+      relativeEndDate = endDate.fromNow()
+    } else {
+      relativeEndDate = endDate.toNow()
+    }
     let formattedState: string
     let color: ColorResolvable
     switch (anime.status) {
@@ -127,15 +153,15 @@ export class DiscordNotifier implements AnimeNotifier {
             value: title,
           }, {
             name: 'Start date',
-            value: startDate ? startDate.format('YYYY-MM-DD') : 'N/A',
+            value: startDate ? `${startDate.format('YYYY-MM-DD')} (${relativeStartDate})` : 'N/A',
             inline: true,
           }, {
-            name: 'End date',
-            value: endDate ? endDate.format('YYYY-MM-DD') : 'N/A',
+            name: `End date${anime.endDate === undefined ? ' (estimated)' : ''}`,
+            value: endDate ? `${endDate.format('YYYY-MM-DD')} (${relativeEndDate})` : 'N/A',
             inline: true,
           }, {
             name: 'Episodes',
-            value: `${anime.numberOfEpisodes}`,
+            value: `${anime.numberOfEpisodes === 0 ? `${numberOfEpisodes} (guessed)` : anime.numberOfEpisodes}`,
             inline: true,
           }])
           .setURL(`https://myanimelist.net/anime/${anime.malId}`)
