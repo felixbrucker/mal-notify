@@ -92,19 +92,15 @@ export class DiscordNotifier implements AnimeNotifier {
       relativeStartDate = undefined
     } else if (startDate.isSame(dayjs().startOf('day'))) {
       relativeStartDate = 'today'
-    } else if (startDate.isBefore(dayjs().startOf('day'))) {
-      relativeStartDate = startDate.fromNow()
     } else {
-      relativeStartDate = startDate.toNow()
+      relativeStartDate = startDate.fromNow()
     }
     if (endDate === undefined) {
       relativeEndDate = undefined
     } else if (endDate.isSame(dayjs().startOf('day'))) {
       relativeEndDate = 'today'
-    } else if (endDate.isBefore(dayjs().startOf('day'))) {
-      relativeEndDate = endDate.fromNow()
     } else {
-      relativeEndDate = endDate.toNow()
+      relativeEndDate = endDate.fromNow()
     }
     let formattedState: string
     let color: ColorResolvable
@@ -117,7 +113,7 @@ export class DiscordNotifier implements AnimeNotifier {
         } else if (startDate.isBefore(dayjs().startOf('day'))) {
           formattedState = `started airing ${startDate.fromNow()}`
         } else {
-          formattedState = `will start airing ${startDate.toNow()}`
+          formattedState = `will start airing ${startDate.fromNow()}`
         }
         color = Colors.Aqua
         break
@@ -129,7 +125,7 @@ export class DiscordNotifier implements AnimeNotifier {
         } else if (endDate.isBefore(dayjs().startOf('day'))) {
           formattedState = `finished airing ${endDate.fromNow()}`
         } else {
-          formattedState = `will finish airing ${endDate.toNow()}`
+          formattedState = `will finish airing ${endDate.fromNow()}`
         }
         color = Colors.Green
         break
