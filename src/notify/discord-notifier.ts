@@ -90,14 +90,14 @@ export class DiscordNotifier implements AnimeNotifier {
     let relativeEndDate: string|undefined
     if (startDate === undefined) {
       relativeStartDate = undefined
-    } else if (startDate.isSame(dayjs().startOf('day'))) {
+    } else if (startDate.isSame(dayjs().tz('JST').startOf('day'))) {
       relativeStartDate = 'today'
     } else {
       relativeStartDate = startDate.fromNow()
     }
     if (endDate === undefined) {
       relativeEndDate = undefined
-    } else if (endDate.isSame(dayjs().startOf('day'))) {
+    } else if (endDate.isSame(dayjs().tz('JST').startOf('day'))) {
       relativeEndDate = 'today'
     } else {
       relativeEndDate = endDate.fromNow()
@@ -108,9 +108,9 @@ export class DiscordNotifier implements AnimeNotifier {
       case AnimeStatus.currentlyAiring:
         if (startDate === undefined) {
           formattedState = 'started airing'
-        } else if (startDate.isSame(dayjs().startOf('day'))) {
+        } else if (startDate.isSame(dayjs().tz('JST').startOf('day'))) {
           formattedState = 'started airing today'
-        } else if (startDate.isBefore(dayjs().startOf('day'))) {
+        } else if (startDate.isBefore(dayjs().tz('JST').startOf('day'))) {
           formattedState = `started airing ${startDate.fromNow()}`
         } else {
           formattedState = `will start airing ${startDate.fromNow()}`
@@ -120,9 +120,9 @@ export class DiscordNotifier implements AnimeNotifier {
       case AnimeStatus.finishedAiring:
         if (endDate === undefined) {
           formattedState = 'finished airing'
-        } else if (endDate.isSame(dayjs().startOf('day'))) {
+        } else if (endDate.isSame(dayjs().tz('JST').startOf('day'))) {
           formattedState = 'finished airing today'
-        } else if (endDate.isBefore(dayjs().startOf('day'))) {
+        } else if (endDate.isBefore(dayjs().tz('JST').startOf('day'))) {
           formattedState = `finished airing ${endDate.fromNow()}`
         } else {
           formattedState = `will finish airing ${endDate.fromNow()}`
@@ -149,11 +149,11 @@ export class DiscordNotifier implements AnimeNotifier {
             value: title,
           }, {
             name: 'Start date',
-            value: startDate ? `${startDate.format('YYYY-MM-DD')} (${relativeStartDate})` : 'N/A',
+            value: startDate ? `${startDate.tz('UTC').format('YYYY-MM-DD')} (${relativeStartDate})` : 'N/A',
             inline: true,
           }, {
             name: `End date${anime.endDate === undefined ? ' (estimated)' : ''}`,
-            value: endDate ? `${endDate.format('YYYY-MM-DD')} (${relativeEndDate})` : 'N/A',
+            value: endDate ? `${endDate.tz('UTC').format('YYYY-MM-DD')} (${relativeEndDate})` : 'N/A',
             inline: true,
           }, {
             name: 'Episodes',

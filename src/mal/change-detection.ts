@@ -6,6 +6,12 @@ import dayjs from 'dayjs'
 import {makeLogger} from '../logging/logger.js'
 import {CleanupService} from '../database/cleanup-service.js'
 
+import utc from 'dayjs/plugin/utc.js'
+import timezone from 'dayjs/plugin/timezone.js'
+
+dayjs.extend(utc)
+dayjs.extend(timezone)
+
 interface AnimeSyncResult {
   entity: HydratedDocument<Anime>
   statusChanged: boolean
@@ -21,7 +27,7 @@ export interface AnimeNotifier {
 }
 
 export class ChangeDetection {
-  private intervalTimer: NodeJS.Timer|undefined
+  private intervalTimer?: ReturnType<typeof setInterval>
   private readonly cleanupService: CleanupService = new CleanupService()
   private readonly logger = makeLogger({ name: 'Change-Detection' })
 
@@ -86,8 +92,8 @@ export class ChangeDetection {
       title: animeListItem.title,
       titleEn: animeListItem.alternative_titles?.en ?? undefined,
       imageUrl: animeListItem.main_picture?.large ?? animeListItem.main_picture?.medium ?? undefined,
-      startDate: animeListItem.start_date ? dayjs(animeListItem.start_date).toDate() : undefined,
-      endDate: animeListItem.end_date ? dayjs(animeListItem.end_date).toDate() : undefined,
+      startDate: animeListItem.start_date ? dayjs.tz(animeListItem.start_date, 'JST').toDate() : undefined,
+      endDate: animeListItem.end_date ? dayjs.tz(animeListItem.end_date, 'JST').toDate() : undefined,
       status: animeListItem.status as AnimeStatus,
       numberOfEpisodes: animeListItem.num_episodes,
     }
