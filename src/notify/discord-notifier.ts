@@ -149,11 +149,11 @@ export class DiscordNotifier implements AnimeNotifier {
             value: title,
           }, {
             name: 'Start date',
-            value: startDate ? `${startDate.tz('UTC').format('YYYY-MM-DD')} (${relativeStartDate})` : 'N/A',
+            value: startDate ? `${startDate.format('YYYY-MM-DD')} (${relativeStartDate})` : 'N/A',
             inline: true,
           }, {
             name: `End date${anime.endDate === undefined ? ' (estimated)' : ''}`,
-            value: endDate ? `${endDate.tz('UTC').format('YYYY-MM-DD')} (${relativeEndDate})` : 'N/A',
+            value: endDate ? `${endDate.format('YYYY-MM-DD')} (${relativeEndDate})` : 'N/A',
             inline: true,
           }, {
             name: 'Episodes',
