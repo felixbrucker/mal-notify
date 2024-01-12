@@ -1,11 +1,11 @@
 FROM node:18-alpine
-RUN yarn set version stable
+RUN npm install -g pnpm
 
 WORKDIR /app
-COPY package.json yarn.lock .yarnrc.yml /app/
-RUN yarn install
+COPY package.json pnpm-lock.yaml /app/
+RUN pnpm install
 COPY . /app
-RUN yarn build
+RUN pnpm run build
 ENV NODE_ENV=production
 
-CMD ["yarn", "start"]
+CMD ["pnpm", "start"]
