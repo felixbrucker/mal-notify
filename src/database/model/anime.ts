@@ -19,7 +19,7 @@ export interface AnimeFields {
 }
 
 export interface Anime extends AnimeFields {
-  update(anime: AnimeFields)
+  update(anime: AnimeFields): void
   getSubscribedDiscordUserIds(): Promise<Snowflake[]>
 }
 

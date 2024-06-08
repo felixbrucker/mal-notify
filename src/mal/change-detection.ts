@@ -15,6 +15,7 @@ dayjs.extend(timezone)
 interface AnimeSyncResult {
   entity: HydratedDocument<Anime>
   statusChanged: boolean
+  endDateChanged: boolean
 }
 
 interface MalUserSyncResult {
@@ -52,7 +53,7 @@ export class ChangeDetection {
   public async detectChanges() {
     const syncResults = await this.sync()
     const animesWithStatusChanges = syncResults
-      .filter(syncResult => syncResult.statusChanged)
+      .filter(syncResult => syncResult.statusChanged || syncResult.endDateChanged)
       .map(change => change.entity)
     if (animesWithStatusChanges.length === 0) {
       return
@@ -97,19 +98,22 @@ export class ChangeDetection {
       status: animeListItem.status as AnimeStatus,
       numberOfEpisodes: animeListItem.num_episodes,
     }
-    const existingAnime = await AnimeModel.findOne({ malId: animeListItem.id })
+    const existingAnime: HydratedDocument<Anime>|null = await AnimeModel.findOne({ malId: animeListItem.id })
     if (existingAnime === null) {
       return {
         entity: new AnimeModel(animeFields),
         statusChanged: false,
+        endDateChanged: false,
       }
     }
     const previousStatus = existingAnime.status
+    const previousEndDate = existingAnime.endDate?.getTime()
     existingAnime.update(animeFields)
 
     return {
       entity: existingAnime,
       statusChanged: existingAnime.status !== previousStatus,
+      endDateChanged: existingAnime.endDate?.getTime() !== previousEndDate,
     }
   }
 }
