@@ -62,7 +62,7 @@ export class DiscordNotifier implements AnimeNotifier {
   }
 
   public shutdown() {
-    this.client.destroy()
+    void this.client.destroy()
   }
 
   public async animeStatusChanged(anime: HydratedDocument<Anime>) {
@@ -72,8 +72,16 @@ export class DiscordNotifier implements AnimeNotifier {
     }
     const messageOptions = this.makeAnimeStatusChangeMessageOptions(anime)
     for (const discordId of discordIds) {
-      const user = await this.client.users.fetch(discordId)
-      await user.send(messageOptions)
+      try {
+        const user = await this.client.users.fetch(discordId)
+        await user.send(messageOptions)
+      } catch (err) {
+        let title = anime.title
+        if (anime.titleEn !== undefined && anime.title !== anime.titleEn) {
+          title += ` (${anime.titleEn})`
+        }
+        this.logger.error(`Failed to notify discord user ${discordId} for status change of ${title}: ${err.message}`)
+      }
     }
   }
 
