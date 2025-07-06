@@ -3,7 +3,7 @@ import {MalAcount} from 'node-myanimelist/typings/methods/malApi/index.js'
 import {WorkBase, WorkForList} from 'node-myanimelist/typings/methods/malApi/common/index.js'
 import {AnimeForList} from 'node-myanimelist/typings/methods/malApi/anime/types.js'
 
-export interface AnimeListItem extends WorkBase, WorkForList.AlternativeTitles, WorkForList.StartDate, WorkForList.EndDate, AnimeForList.Status, AnimeForList.NumEpisodes {}
+export interface AnimeListItem extends WorkBase, WorkForList.AlternativeTitles, WorkForList.StartDate, WorkForList.EndDate, AnimeForList.Status, AnimeForList.NumEpisodes, AnimeForList.Broadcast {}
 
 export class MalApi {
   private account: MalAcount
@@ -21,7 +21,7 @@ export class MalApi {
       const list = await this.account.user
         .animelist(
           username,
-          Mal.Anime.fields().alternativeTitles().startDate().endDate().status().numEpisodes(),
+          Mal.Anime.fields().alternativeTitles().startDate().endDate().status().numEpisodes().broadcast(),
           null,
           {
             status: 'plan_to_watch',

@@ -88,13 +88,15 @@ export class ChangeDetection {
   }
 
   private async syncAnime(animeListItem: AnimeListItem): Promise<AnimeSyncResult> {
+    const startDateStringJst = animeListItem.start_date ? `${animeListItem.start_date} ${animeListItem.broadcast?.start_time ?? '00:00'}` : undefined
+    const endDateStringJst = animeListItem.end_date ? `${animeListItem.end_date} ${animeListItem.broadcast?.start_time ?? '00:00'}` : undefined
     const animeFields: AnimeFields = {
       malId: animeListItem.id,
       title: animeListItem.title,
       titleEn: animeListItem.alternative_titles?.en ?? undefined,
       imageUrl: animeListItem.main_picture?.large ?? animeListItem.main_picture?.medium ?? undefined,
-      startDate: animeListItem.start_date ? dayjs.tz(animeListItem.start_date, 'JST').toDate() : undefined,
-      endDate: animeListItem.end_date ? dayjs.tz(animeListItem.end_date, 'JST').toDate() : undefined,
+      startDate: startDateStringJst ? dayjs.tz(startDateStringJst, 'JST').toDate() : undefined,
+      endDate: endDateStringJst ? dayjs.tz(endDateStringJst, 'JST').toDate() : undefined,
       status: animeListItem.status as AnimeStatus,
       numberOfEpisodes: animeListItem.num_episodes,
     }

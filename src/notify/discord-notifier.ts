@@ -1,6 +1,5 @@
 import {HydratedDocument} from 'mongoose'
 import {
-  APIEmbedField,
   Client,
   ColorResolvable,
   Colors,
@@ -22,8 +21,10 @@ import {MalApi} from '../mal/mal-api.js'
 
 import '../database/model/discord-user.js'
 import relativeTime from 'dayjs/plugin/relativeTime.js'
+import isToday from 'dayjs/plugin/isToday.js'
 
 dayjs.extend(relativeTime)
+dayjs.extend(isToday)
 
 export class DiscordNotifier implements AnimeNotifier {
   private readonly client: Client = new Client({ intents: [] })
@@ -98,14 +99,14 @@ export class DiscordNotifier implements AnimeNotifier {
     let relativeEndDate: string|undefined
     if (startDate === undefined) {
       relativeStartDate = undefined
-    } else if (startDate.isSame(dayjs().tz('JST').startOf('day'))) {
+    } else if (startDate.isToday()) {
       relativeStartDate = 'today'
     } else {
       relativeStartDate = startDate.fromNow()
     }
     if (endDate === undefined) {
       relativeEndDate = undefined
-    } else if (endDate.isSame(dayjs().tz('JST').startOf('day'))) {
+    } else if (endDate.isToday()) {
       relativeEndDate = 'today'
     } else {
       relativeEndDate = endDate.fromNow()
@@ -116,7 +117,7 @@ export class DiscordNotifier implements AnimeNotifier {
       case AnimeStatus.currentlyAiring:
         if (startDate === undefined) {
           formattedState = 'started airing'
-        } else if (startDate.isSame(dayjs().tz('JST').startOf('day'))) {
+        } else if (startDate.isToday()) {
           formattedState = 'started airing today'
         } else if (startDate.isBefore(dayjs().tz('JST').startOf('day'))) {
           formattedState = `started airing ${startDate.fromNow()}`
@@ -128,7 +129,7 @@ export class DiscordNotifier implements AnimeNotifier {
       case AnimeStatus.finishedAiring:
         if (endDate === undefined) {
           formattedState = 'finished airing'
-        } else if (endDate.isSame(dayjs().tz('JST').startOf('day'))) {
+        } else if (endDate.isToday()) {
           formattedState = 'finished airing today'
         } else if (endDate.isBefore(dayjs().tz('JST').startOf('day'))) {
           formattedState = `finished airing ${endDate.fromNow()}`
