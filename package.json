@@ -5,6 +5,7 @@
     "type": "module",
     "scripts": {
         "start": "node --enable-source-maps ./dist/src/main.js",
+        "live": "node --loader ts-node/esm src/main.ts",
         "build": "tsc",
         "lint": "eslint --ext .ts .",
         "lint:fix": "yarn lint --fix",
