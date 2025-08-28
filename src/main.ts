@@ -1,3 +1,5 @@
+import './extensions/array-extensions.js'
+
 import {defaultLogger} from './logging/logger.js'
 import {Database} from './database/database.js'
 import {databaseUrl} from './config/config.js'
