@@ -7,7 +7,7 @@ import {ChangeDetection} from './mal/change-detection.js'
 import {DiscordNotifier} from './notify/discord-notifier.js'
 import {MalApi} from './mal/mal-api.js'
 
-const { default: packageJson } = await import('../package.json', { assert: { type: 'json' } })
+import packageJson from '../package.json' with { type: 'json' }
 
 process.on('unhandledRejection', (err: Error) => defaultLogger.error(err))
 process.on('uncaughtException', (err: Error) => defaultLogger.error(err))
