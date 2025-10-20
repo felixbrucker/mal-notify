@@ -47,7 +47,7 @@ export class DiscordNotifier implements AnimeNotifier {
   }
 
   public async init() {
-    const readyPromise = new Promise(resolve => this.client.once('ready', resolve))
+    const readyPromise = new Promise(resolve => this.client.once('clientReady', resolve))
 
     this.client.on('error', (err) => { this.logger.error(err) })
     this.client.on('interactionCreate', this.onInteraction.bind(this))
