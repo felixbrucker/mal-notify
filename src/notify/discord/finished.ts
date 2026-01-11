@@ -5,20 +5,19 @@ import {SlashCommandHandler} from './slash-command-handler.js'
 import {DiscordUserModel} from '../../database/model/discord-user.js'
 import {ObjectId} from 'mongoose'
 import {AnimeModel} from '../../database/model/anime.js'
-import dayjs from 'dayjs'
 import {makeAnimesMessageOptions} from './anime-formatting.js'
 
-export class FinishingSoon implements SlashCommandHandler {
-  public static make(): FinishingSoon {
-    return new FinishingSoon()
+export class Finished implements SlashCommandHandler {
+  public static make(): Finished {
+    return new Finished()
   }
 
   public readonly commandBuilder: SlashCommandBuilder = new SlashCommandBuilder()
 
   public constructor() {
     this.commandBuilder
-      .setName('finishing-soon')
-      .setDescription('Show a list of shows which are finishing to air soon')
+      .setName('finished')
+      .setDescription('Show a list of shows which have finished airing')
   }
 
   public async handle(interaction: ChatInputCommandInteraction) {
@@ -32,24 +31,23 @@ export class FinishingSoon implements SlashCommandHandler {
       return
     }
     const animeDbIds: ObjectId[] = discordUser.subscribedToUsers.flatMap((user: any) => user.planToWatchAnimes)
-    const finishingSoonAnimes = await AnimeModel
+    const finishedAnimes = await AnimeModel
       .find({
         _id: {
           $in: animeDbIds,
         },
         endDate: {
-          $gt: new Date(),
-          $lt: dayjs().add(2, 'weeks').toDate(),
+          $lte: new Date(),
         }
       })
       .sort({ endDate: 1})
-    if (finishingSoonAnimes.length === 0) {
-      await interaction.editReply(`:white_check_mark: No shows finishing to air soon`)
+    if (finishedAnimes.length === 0) {
+      await interaction.editReply(`:white_check_mark: No shows finished airing`)
 
       return
     }
 
-    const messageOptions = makeAnimesMessageOptions(finishingSoonAnimes)
+    const messageOptions = makeAnimesMessageOptions(finishedAnimes)
     await interaction.editReply(messageOptions[0])
     for (const messageOption of messageOptions.slice(1)) {
       await interaction.followUp(messageOption)

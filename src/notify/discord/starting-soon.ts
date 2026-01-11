@@ -8,16 +8,16 @@ import {AnimeModel} from '../../database/model/anime.js'
 import dayjs from 'dayjs'
 import {makeAnimesMessageOptions} from './anime-formatting.js'
 
-export class ComingSoon implements SlashCommandHandler {
-  public static make(): ComingSoon {
-    return new ComingSoon()
+export class StartingSoon implements SlashCommandHandler {
+  public static make(): StartingSoon {
+    return new StartingSoon()
   }
 
   public readonly commandBuilder: SlashCommandBuilder = new SlashCommandBuilder()
 
   public constructor() {
     this.commandBuilder
-      .setName('coming-soon')
+      .setName('starting-soon')
       .setDescription('Show a list of shows which are starting to air soon')
   }
 
@@ -34,7 +34,9 @@ export class ComingSoon implements SlashCommandHandler {
     const animeDbIds: ObjectId[] = discordUser.subscribedToUsers.flatMap((user: any) => user.planToWatchAnimes)
     const comingSoonAnimes = await AnimeModel
       .find({
-        id: animeDbIds,
+        _id: {
+          $in: animeDbIds,
+        },
         startDate: {
           $gt: new Date(),
           $lt: dayjs().add(2, 'weeks').toDate(),
@@ -42,7 +44,7 @@ export class ComingSoon implements SlashCommandHandler {
       })
       .sort({ startDate: 1})
     if (comingSoonAnimes.length === 0) {
-      await interaction.editReply(`:white_check_mark: No shows coming soon`)
+      await interaction.editReply(`:white_check_mark: No shows starting to air soon`)
 
       return
     }

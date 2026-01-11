@@ -22,9 +22,10 @@ import {MalApi} from '../mal/mal-api.js'
 import '../database/model/discord-user.js'
 import relativeTime from 'dayjs/plugin/relativeTime.js'
 import isToday from 'dayjs/plugin/isToday.js'
-import {ComingSoon} from './discord/coming-soon.js'
+import {StartingSoon} from './discord/starting-soon.js'
 import {FinishingSoon} from './discord/finishing-soon.js'
 import {makeAnimeMessageOptions} from './discord/anime-formatting.js'
+import {Finished} from './discord/finished.js'
 
 dayjs.extend(relativeTime)
 dayjs.extend(isToday)
@@ -38,8 +39,9 @@ export class DiscordNotifier implements AnimeNotifier {
   public constructor(malApi: MalApi) {
     this.registerSlashCommandHandlerBuilder(
       UnsubscribeFromUser,
-      ComingSoon,
+      StartingSoon,
       FinishingSoon,
+      Finished,
     )
     this.registerSlashCommandHandler(
       new SubscribeToUser(malApi),
